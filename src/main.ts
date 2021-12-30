@@ -1,12 +1,21 @@
+import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 
-import { AppModule } from './app.module';
+import { AppModule } from '~/modules/app.module';
+import { ServerConfig } from '~/modules/initialize/configs/server.config';
 
-/**
- *
- */
-async function bootstrap() {
+const bootstrap = async () => {
     const app = await NestFactory.create(AppModule);
-    await app.listen(3000);
-}
-bootstrap();
+    app.useGlobalPipes(new ValidationPipe());
+
+    // server config 조회
+    const configService = app.get(ConfigService);
+    const { PORT } = configService.get<ServerConfig>('server') || {};
+
+    // service 시작
+    await app.listen(PORT || 3000);
+    console.log(`Application is running on: ${await app.getUrl()}`);
+};
+
+bootstrap().then();
