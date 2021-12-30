@@ -1,0 +1,19 @@
+{
+  "extends": "@choseohwan/tsconfig-base",
+  "compilerOptions": {
+    "rootDir": "./",
+    "baseUrl": "./",
+    "paths": {
+      "~/*": ["src/*"]
+    },
+    "declaration": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "sourceMap": false,
+    "strictPropertyInitialization": false
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": ["dist/**/*"]
+}
