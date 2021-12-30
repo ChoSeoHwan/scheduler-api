@@ -1,4 +1,3 @@
-import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 
@@ -7,7 +6,6 @@ import { ServerConfig } from '~/modules/initialize/configs/server.config';
 
 const bootstrap = async () => {
     const app = await NestFactory.create(AppModule);
-    app.useGlobalPipes(new ValidationPipe());
 
     // server config 조회
     const configService = app.get(ConfigService);

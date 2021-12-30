@@ -11,7 +11,6 @@ import serverConfig, {
 
 const schemaPath = path.resolve(SOURCE_ROOT, '../schema.gql');
 
-console.log(SOURCE_ROOT);
 @Module({
     imports: [
         // config module 세팅
@@ -24,7 +23,20 @@ console.log(SOURCE_ROOT);
         // graphql module 세팅
         GraphQLModuleBase.forRoot({
             autoSchemaFile: schemaPath,
-            playground: true
+            playground: true,
+            formatError: (error) => {
+                const isProduction = process.env.NODE_ENV === 'production';
+
+                // 실서버일 경우 실제 에러 제거
+                if (
+                    isProduction &&
+                    typeof error?.extensions?.exception !== 'undefined'
+                ) {
+                    delete error.extensions.exception;
+                }
+
+                return error;
+            }
         })
     ]
 })

@@ -1,4 +1,3 @@
-import { ConfigService } from '@nestjs/config';
 import { Args, Query, Resolver } from '@nestjs/graphql';
 
 import scheduleList from '~/data/schedule-list';
@@ -12,5 +11,10 @@ export class ScheduleResolver {
     schedule(@Args() { idx }: ScheduleArgs): Nullable<Schedule> {
         if (!scheduleList[idx]) return null;
         return scheduleList[idx];
+    }
+
+    @Query(() => [Schedule])
+    schedules(@Args() { idx }: ScheduleArgs) {
+        return scheduleList;
     }
 }

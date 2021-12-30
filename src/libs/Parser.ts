@@ -1,8 +1,3 @@
-/**
- * @global
- * @typedef {unknown} unknown
- */
-
 class Parser {
     /**
      * string 으로 변환
