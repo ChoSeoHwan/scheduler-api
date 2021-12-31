@@ -3,7 +3,7 @@ import Joi from 'joi';
 
 import NodeEnvType from '~/constants/NodeEnvType';
 import Parser from '~/libs/Parser';
-import { ValidateSchema } from '~/types/joi';
+import { ValidateSchema } from '~/types/utils';
 
 export interface ServerConfig {
     NODE_ENV: string;

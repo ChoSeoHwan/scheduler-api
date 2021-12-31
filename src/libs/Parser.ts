@@ -1,3 +1,5 @@
+import { boolean } from 'boolean';
+
 class Parser {
     /**
      * string 으로 변환
@@ -71,6 +73,16 @@ class Parser {
             default:
                 return defaultValue;
         }
+    }
+
+    /**
+     * boolean 으로 변환
+     *
+     * @param {unknown} item 변환될 값
+     * @returns {boolean} 변환된 값
+     */
+    static boolean(item: unknown): boolean {
+        return boolean(item);
     }
 }
 
