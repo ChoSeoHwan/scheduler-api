@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { GroupEntity } from '~/common/entities/scheduler/Group.entity';
+import { GroupLoader } from '~/scheduler/loader/Group.loader';
 import { GroupModel } from '~/scheduler/models/Group.model';
 import { ScheduleModel } from '~/scheduler/models/Schedule.model';
 import { Nullable } from '~/types/utils';
@@ -11,7 +12,8 @@ import { Nullable } from '~/types/utils';
 export class GroupService {
     constructor(
         @InjectRepository(GroupEntity)
-        private readonly groupRepository: Repository<GroupEntity>
+        private readonly groupRepository: Repository<GroupEntity>,
+        private readonly groupLoader: GroupLoader
     ) {}
 
     /**
@@ -40,17 +42,6 @@ export class GroupService {
     async getSchedulesFromGroup(
         groupIdx: number
     ): Promise<Nullable<ScheduleModel[]>> {
-        const groups = await this.groupRepository.findOne(groupIdx, {
-            relations: ['schedules']
-        });
-        if (!groups) return null;
-
-        return groups.schedules.map((schedule) => ({
-            idx: schedule.idx,
-            title: schedule.title,
-            description: schedule.description,
-            created_at: schedule.created_at,
-            updated_at: schedule.updated_at
-        }));
+        return await this.groupLoader.load(groupIdx);
     }
 }

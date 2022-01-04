@@ -3,13 +3,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { GroupEntity } from '~/common/entities/scheduler/Group.entity';
 import { ScheduleEntity } from '~/common/entities/scheduler/Schedule.entity';
-import { GroupResolver } from '~/scheduler/resolvers/Group.resolver';
-import { ScheduleResolver } from '~/scheduler/resolvers/Schedule.resolver';
-import { GroupService } from '~/scheduler/services/Group.service';
-import { ScheduleService } from '~/scheduler/services/Schedule.service';
+import loaders from '~/scheduler/loader';
+import resolvers from '~/scheduler/resolvers';
+import services from '~/scheduler/services';
 
 @Module({
     imports: [TypeOrmModule.forFeature([GroupEntity, ScheduleEntity])],
-    providers: [GroupResolver, ScheduleResolver, GroupService, ScheduleService]
+    providers: [...resolvers, ...services, ...loaders]
 })
 export class SchedulerModule {}
