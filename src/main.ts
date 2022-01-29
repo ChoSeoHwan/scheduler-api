@@ -17,7 +17,18 @@ const bootstrap = async () => {
 
     // service 시작
     await app.listen(PORT || 3000);
+
+    // ready 호출
+    process.send?.('ready');
     console.log(`Application is running on: ${await app.getUrl()}`);
+
+    // interrupt
+    process.on('SIGINT', async () => {
+        await app.close();
+
+        console.log('Application closed.');
+        process.exit(0);
+    });
 };
 
 bootstrap().then();
