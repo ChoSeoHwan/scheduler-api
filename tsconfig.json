@@ -1,19 +1,17 @@
 {
-  "extends": "@choseohwan/tsconfig-base",
-  "compilerOptions": {
-    "rootDir": "./",
-    "baseUrl": "./",
-    "paths": {
-      "~/*": ["src/*"]
-    },
-    "declaration": false,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "sourceMap": false,
-    "strictPropertyInitialization": false
-  },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": ["dist/**/*"]
+    "extends": "@choseohwan/tsconfig-base",
+    "compilerOptions": {
+        "module": "commonjs",
+        "rootDir": "src",
+        "outDir": "./dist",
+        "baseUrl": "./",
+        "paths": {
+            "~/*": ["src/*"]
+        },
+        "declaration": false,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "sourceMap": false,
+        "strictPropertyInitialization": false
+    }
 }
