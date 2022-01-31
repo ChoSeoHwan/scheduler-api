@@ -1,12 +1,19 @@
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { useContainer } from 'class-validator';
+import { NextFunction, Request, Response } from 'express';
 
 import { AppModule } from '~/app.module';
 import { ServerConfig } from '~/initialize/configs/server.config';
 
 const bootstrap = async () => {
+    let isInterruptedProcess = false;
+
     const app = await NestFactory.create(AppModule);
+    app.use((req: Request, res: Response, next: NextFunction) => {
+        if (isInterruptedProcess) res.set('Connection', 'close');
+        next();
+    });
 
     // 각종 라이브러리에 container 주입
     useContainer(app.select(AppModule), { fallbackOnErrors: true });
@@ -24,6 +31,7 @@ const bootstrap = async () => {
 
     // interrupt
     process.on('SIGINT', async () => {
+        isInterruptedProcess = true;
         await app.close();
 
         console.log('Application closed.');
