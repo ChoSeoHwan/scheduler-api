@@ -8,5 +8,10 @@ ls -al
 # production 모드로 dependency 설치
 docker exec node-api yarn install --production
 
-# pm2 reload
-docker exec node-api pm2 reload scheduler-api
+ls -al
+cd dist || exit;
+ls -al
+
+#
+## pm2 reload
+#docker exec node-api pm2 reload scheduler-api
