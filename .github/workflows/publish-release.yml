@@ -3,7 +3,7 @@ name: release version publish
 on: [push]
 
 env:
-  ZIP_FILE: scheduler-api.${GITHUB_SHA::6}.zip
+  ZIP_FILE: scheduler-api.${{ github.sha }}.zip
   DEPLOY_PATH: /deploy/scheduler-api
 
 jobs:
