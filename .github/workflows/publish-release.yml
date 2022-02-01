@@ -29,9 +29,7 @@ jobs:
         run: yarn build
 
       - name: zip distributioms
-        run: zip -r scheduler-api.${GITHUB_SHA::6}.zip ./dist ./.env ./ecosystem.config.js ./package.json ./yarn.lock ./appspec.yml
-
-      - run: ls -al
+        run: zip -r scheduler-api.${GITHUB_SHA::6}.zip ./dist ./.env ./ecosystem.config.js ./package.json ./yarn.lock ./appspec.yml ./scripts
 
       - name: AWS 설정
         uses: aws-actions/configure-aws-credentials@v1
