@@ -6,8 +6,6 @@ import { AppModule } from '~/app.module';
 import { ServerConfig } from '~/initialize/configs/server.config';
 
 const bootstrap = async () => {
-    console.log('ci test 2');
-
     const app = await NestFactory.create(AppModule);
 
     // 각종 라이브러리에 container 주입
