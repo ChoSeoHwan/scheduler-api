@@ -4,7 +4,7 @@ on: [push]
 
 env:
   ZIP_FILE: scheduler-api.${{ github.sha }}.zip
-  DEPLOY_PATH: /deploy/scheduler-api
+  DEPLOY_PATH: deploy/scheduler-api
 
 jobs:
   publish-release:
@@ -46,7 +46,7 @@ jobs:
         run: |
           aws s3 cp --region ${{ secrets.AWS_REGION_NAME }} \
           ./${ZIP_FILE} \
-          s3://${{ secrets.AWS_S3_BUCKET }}${DEPLOY_PATH}/
+          s3://${{ secrets.AWS_S3_BUCKET }}/${DEPLOY_PATH}/
 
       - name: deploy with AWS CodeDeploy
         run: |
