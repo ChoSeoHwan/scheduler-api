@@ -20,7 +20,7 @@ jobs:
         run: |
           touch .env
           cat << EOF >> .env
-          ${{ secretes.ENV }}
+          ${{ secrets.ENV }}
 
       - name: Install node dependencies
         run: yarn install
