@@ -16,18 +16,29 @@ jobs:
 
       - uses: c-hive/gha-yarn-cache@v2
 
+      - name: generate env file
+        run: |
+          touch .env
+          cat << EOF >> .env
+          ${{ secretes.ENV }}
+
       - name: Install node dependencies
         run: yarn install
 
       - name: Build node application
         run: yarn build
 
-      - name: ssh test
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          script: |
-            docker exec node-api pm2 list
+      - name: zip distributioms
+        run: zip -r scheduler-api.${GITHUB_SHA::6}.zip ./dist ./.env ./ecosystem.config.js ./package.json ./yarn.lock
+
+      - run: ls -al
+
+#      - name: AWS 설정
+#        uses: aws-actions/configure-aws-credentials@v1
+#        with:
+#          aws-access-key-id: ${{ secrets.AWS_KEY_ID }}
+#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#          aws-region: ${{ secrets.AWS_REGION_NAME }}
+#
+#      - name: upload to S3
+#        run: aws s3 cp --region ${{ secrets.AWS_REGION_NAME }}
