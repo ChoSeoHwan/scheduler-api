@@ -1,0 +1,34 @@
+name: release version publish
+
+on:
+  pull_request:
+    branches: [main]
+    types: [closed]
+
+jobs:
+  publish-release:
+    name: publish release version
+    runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.merged }}
+    steps:
+      - name: checkout pull request from main branch
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.base.ref }}
+          repository: ${{ github.event.pull_request.base.repo.full_name }}
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - uses: c-hive/gha-yarn-cache@v2
+
+      - name: Install node dependencies
+        run: yarn install
+
+      - name: Build node application
+        run: yarn build
+
+      - run: ls -al
