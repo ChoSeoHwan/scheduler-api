@@ -1,22 +1,19 @@
 name: release version publish
 
 on:
-  pull_request:
+  push:
     branches: [master]
-    types: [closed]
+
+env:
+  ZIP_FILE: scheduler-api.${{ github.sha }}.zip
+  DEPLOY_PATH: deploy/scheduler-api
 
 jobs:
   publish-release:
     name: publish release version
     runs-on: ubuntu-latest
-    if: ${{ github.event.pull_request.merged }}
     steps:
-      - name: checkout pull request from main branch
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.pull_request.base.ref }}
-          repository: ${{ github.event.pull_request.base.repo.full_name }}
-          fetch-depth: 0
+      - uses: actions/checkout@v2
 
       - name: Setup Node
         uses: actions/setup-node@v2
@@ -25,10 +22,38 @@ jobs:
 
       - uses: c-hive/gha-yarn-cache@v2
 
+      - name: generate env file
+        run: |
+          touch .env
+          cat << EOF >> .env
+          ${{ secrets.ENV }}
+
       - name: Install node dependencies
         run: yarn install
 
       - name: Build node application
         run: yarn build
 
-      - run: ls -al
+      - name: zip distributioms
+        run: zip -r ${ZIP_FILE} ./dist ./.env ./ecosystem.config.js ./package.json ./yarn.lock ./appspec.yml ./scripts
+
+      - name: AWS 설정
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION_NAME }}
+
+      - name: upload to S3
+        run: |
+          aws s3 cp --region ${{ secrets.AWS_REGION_NAME }} \
+          ./${ZIP_FILE} \
+          s3://${{ secrets.AWS_S3_BUCKET }}/${DEPLOY_PATH}/
+
+      - name: deploy with AWS CodeDeploy
+        run: |
+          aws deploy create-deployment \
+          --application-name 	${{ secrets.AWS_APPLICATION_NAME }} \
+          --deployment-config-name CodeDeployDefault.OneAtATime \
+          --deployment-group-name ${{ secrets.AWS_DEPLOY_GROUP }} \
+          --s3-location bucket=${{ secrets.AWS_S3_BUCKET }},bundleType=zip,key=${DEPLOY_PATH}/${ZIP_FILE}
