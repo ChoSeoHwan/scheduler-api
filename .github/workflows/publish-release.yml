@@ -29,16 +29,27 @@ jobs:
         run: yarn build
 
       - name: zip distributioms
-        run: zip -r scheduler-api.${GITHUB_SHA::6}.zip ./dist ./.env ./ecosystem.config.js ./package.json ./yarn.lock
+        run: zip -r scheduler-api.${GITHUB_SHA::6}.zip ./dist ./.env ./ecosystem.config.js ./package.json ./yarn.lock ./appspec.yml
 
       - run: ls -al
 
-#      - name: AWS 설정
-#        uses: aws-actions/configure-aws-credentials@v1
-#        with:
-#          aws-access-key-id: ${{ secrets.AWS_KEY_ID }}
-#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#          aws-region: ${{ secrets.AWS_REGION_NAME }}
-#
-#      - name: upload to S3
-#        run: aws s3 cp --region ${{ secrets.AWS_REGION_NAME }}
+      - name: AWS 설정
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION_NAME }}
+
+      - name: upload to S3
+        run: |
+          aws s3 cp --region ${{ secrets.AWS_REGION_NAME }} \
+          ./scheduler-api.${GITHUB_SHA::6}.zip \
+          s3://choseohwan-deploy-bucket/deploy/scheduler-api/
+
+      - name: deploy with AWS CodeDeploy
+        run: |
+          aws deploy create-deployment \
+          --application-name 	scheduler-api-production \
+          --deployment-config-name CodeDeployDefault.OneAtATime \
+          --deployment-group-name ProductionGroup \
+          --s3-location bucket=choseohwan-deploy-bucket,bundleType=zip,key=deploy/scheduler-api/scheduler-api.${GITHUB_SHA::6}.zip
