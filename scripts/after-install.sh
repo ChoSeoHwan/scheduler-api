@@ -8,7 +8,5 @@ ls -al
 # production 모드로 dependency 설치
 docker exec node-api yarn install --production
 
-docker exec node-api ls -al /usr/src
-
 # pm2 reload
 docker exec node-api pm2 reload scheduler-api

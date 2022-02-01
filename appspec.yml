@@ -3,7 +3,7 @@ os: linux
 files:
   - source: /
     destination: /ec2-user/scheduler-api
-    overwrite: yes
+file_exists_behavior: OVERWRITE
 
 permissions:
   - object: /ec2-user/scheduler-api

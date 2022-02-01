@@ -13,5 +13,4 @@ cd $SOURCE_ROOT || exit 1
 cp -r ./* $BACKUP_ROOT
 
 # 현재 소스 제거
-sudo rm -rf $SOURCE_ROOT
-mkdir $SOURCE_ROOT
+sudo rm -rf $SOURCE_ROOT/*
