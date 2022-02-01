@@ -1,22 +1,13 @@
 name: release version publish
 
-on:
-  pull_request:
-    branches: [main]
-    types: [closed]
+on: [push]
 
 jobs:
   publish-release:
     name: publish release version
     runs-on: ubuntu-latest
-    if: ${{ github.event.pull_request.merged }}
     steps:
-      - name: checkout pull request from main branch
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.pull_request.base.ref }}
-          repository: ${{ github.event.pull_request.base.repo.full_name }}
-          fetch-depth: 0
+      - uses: actions/checkout@v2
 
       - name: Setup Node
         uses: actions/setup-node@v2
@@ -31,4 +22,12 @@ jobs:
       - name: Build node application
         run: yarn build
 
-      - run: ls -al
+      - name: ssh test
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            docker exec node-api pm2 list
