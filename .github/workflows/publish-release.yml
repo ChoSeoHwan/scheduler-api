@@ -1,6 +1,8 @@
 name: release version publish
 
-on: [push]
+on:
+  push:
+    branches: [master]
 
 env:
   ZIP_FILE: scheduler-api.${{ github.sha }}.zip
