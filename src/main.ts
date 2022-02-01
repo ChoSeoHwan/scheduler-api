@@ -6,7 +6,7 @@ import { AppModule } from '~/app.module';
 import { ServerConfig } from '~/initialize/configs/server.config';
 
 const bootstrap = async () => {
-    console.log('ci test');
+    console.log('ci test 2');
 
     const app = await NestFactory.create(AppModule);
 
